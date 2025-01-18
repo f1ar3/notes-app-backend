@@ -1,4 +1,4 @@
-FROM python:3.13.1-slim-bullseye
+FROM python:3.12.2-slim-bullseye
 
 WORKDIR /usr/src/notes-app-backend
 
