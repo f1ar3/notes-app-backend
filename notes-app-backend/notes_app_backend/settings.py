@@ -1,10 +1,7 @@
 import os
 from datetime import timedelta
-from email.policy import default
 
 from pathlib import Path
-
-from django.conf.global_settings import AUTH_USER_MODEL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,8 +30,11 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": True,
-    "SIGNING_KEY": SECRET_KEY,
+    "SIGNING_KEY": os.environ.get("SECRET_KEY"),
     "ALGORITHM": "HS512",
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
 }
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -62,6 +62,10 @@ REST_AUTH = {
     "JWT_AUTH_HTTPONLY": False,
 }
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -75,6 +79,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 
     'allauth',
     'allauth.account',
@@ -169,6 +174,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
